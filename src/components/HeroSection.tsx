@@ -1,228 +1,143 @@
-import { useEffect, useState, useRef } from "react";
-import { Terminal, Briefcase, Github } from "lucide-react";
+import { useEffect, useState } from "react";
+import { ArrowDown } from "lucide-react";
 
 const roles = [
-  "ML Systems Engineer",
-  "AI Infrastructure Architect",
-  "Deep Learning Engineer",
-  "Distributed Systems Builder",
-  "Full-Stack ML Engineer",
+  "Software Engineer",
+  "Systems Builder",
+  "ML Infrastructure",
+  "Platform Architect",
 ];
 
 const HeroSection = () => {
-  const [visible, setVisible] = useState(false);
-  const [gateOpen, setGateOpen] = useState(false);
-  const [roleIndex, setRoleIndex] = useState(0);
-  const [displayText, setDisplayText] = useState("");
-  const [isDeleting, setIsDeleting] = useState(false);
-  const [nameHovered, setNameHovered] = useState(false);
-  const nameRef = useRef<HTMLDivElement>(null);
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
-  const glyphRef = useRef<HTMLCanvasElement>(null);
+  const [loaded, setLoaded] = useState(false);
+  const [roleIdx, setRoleIdx] = useState(0);
+  const [text, setText] = useState("");
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
-    const timer = setTimeout(() => setVisible(true), 300);
-    const gateTimer = setTimeout(() => setGateOpen(true), 1800);
-    return () => { clearTimeout(timer); clearTimeout(gateTimer); };
+    const t = setTimeout(() => setLoaded(true), 100);
+    return () => clearTimeout(t);
   }, []);
 
   useEffect(() => {
-    const currentRole = roles[roleIndex];
+    const current = roles[roleIdx];
     let timeout: ReturnType<typeof setTimeout>;
-    if (!isDeleting) {
-      if (displayText.length < currentRole.length) {
-        timeout = setTimeout(() => setDisplayText(currentRole.slice(0, displayText.length + 1)), 60);
+    if (!deleting) {
+      if (text.length < current.length) {
+        timeout = setTimeout(() => setText(current.slice(0, text.length + 1)), 70);
       } else {
-        timeout = setTimeout(() => setIsDeleting(true), 2000);
+        timeout = setTimeout(() => setDeleting(true), 2200);
       }
     } else {
-      if (displayText.length > 0) {
-        timeout = setTimeout(() => setDisplayText(displayText.slice(0, -1)), 30);
+      if (text.length > 0) {
+        timeout = setTimeout(() => setText(text.slice(0, -1)), 35);
       } else {
-        setIsDeleting(false);
-        setRoleIndex((prev) => (prev + 1) % roles.length);
+        setDeleting(false);
+        setRoleIdx((p) => (p + 1) % roles.length);
       }
     }
     return () => clearTimeout(timeout);
-  }, [displayText, isDeleting, roleIndex]);
-
-  useEffect(() => {
-    const handleMouse = (e: MouseEvent) => {
-      const cx = window.innerWidth / 2;
-      const cy = window.innerHeight / 2;
-      setMousePos({ x: (e.clientX - cx) / cx, y: (e.clientY - cy) / cy });
-    };
-    window.addEventListener("mousemove", handleMouse);
-    return () => window.removeEventListener("mousemove", handleMouse);
-  }, []);
-
-  // Holographic shimmer canvas behind the name
-  useEffect(() => {
-    const canvas = glyphRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-    canvas.width = 600;
-    canvas.height = 200;
-    let raf: number;
-    let t = 0;
-    const draw = () => {
-      t += 0.02;
-      ctx.clearRect(0, 0, 600, 200);
-      for (let i = 0; i < 30; i++) {
-        const x = (i * 20 + t * 40) % 620 - 10;
-        const y = 100 + Math.sin(t + i * 0.4) * 30;
-        const alpha = 0.03 + Math.sin(t * 2 + i) * 0.02;
-        ctx.beginPath();
-        ctx.arc(x, y, 2, 0, Math.PI * 2);
-        ctx.fillStyle = `hsla(185, 80%, 55%, ${alpha})`;
-        ctx.fill();
-      }
-      raf = requestAnimationFrame(draw);
-    };
-    draw();
-    return () => cancelAnimationFrame(raf);
-  }, []);
+  }, [text, deleting, roleIdx]);
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Cyber grid floor */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div
-          className="absolute bottom-0 left-0 right-0 h-[60%]"
-          style={{
-            background: `
-              linear-gradient(to top, hsl(220 20% 4% / 0) 0%, hsl(220 20% 4%) 100%),
-              repeating-linear-gradient(90deg, hsl(185 80% 55% / 0.06) 0px, transparent 1px, transparent 60px),
-              repeating-linear-gradient(0deg, hsl(185 80% 55% / 0.06) 0px, transparent 1px, transparent 60px)
-            `,
-            transform: "perspective(500px) rotateX(60deg)",
-            transformOrigin: "bottom center",
-          }}
-        />
-      </div>
+    <section className="relative min-h-screen flex items-center justify-center px-6 overflow-hidden">
+      {/* Subtle ambient glow */}
+      <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] rounded-full bg-primary/[0.03] blur-[150px] anim-float" />
+      <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] rounded-full bg-primary/[0.02] blur-[120px] anim-float" style={{ animationDelay: "2.5s" }} />
 
-      {/* Ambient orbs */}
-      <div className="absolute top-20 left-[10%] w-96 h-96 rounded-full bg-primary/5 blur-[100px] animate-float" />
-      <div className="absolute bottom-20 right-[10%] w-[30rem] h-[30rem] rounded-full bg-accent/5 blur-[120px] animate-float" style={{ animationDelay: "3s" }} />
-
-      {/* Gate structure */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+      {/* Content */}
+      <div className="relative z-10 max-w-4xl w-full">
+        {/* Status line */}
         <div
-          className="absolute left-0 top-0 h-full bg-background/95 border-r border-primary/20 z-30 transition-all duration-[2000ms] ease-[cubic-bezier(0.16,1,0.3,1)]"
-          style={{ width: gateOpen ? "0%" : "50%", boxShadow: gateOpen ? "none" : "10px 0 60px hsl(185 80% 55% / 0.15)" }}
+          className={`flex items-center gap-3 mb-10 transition-all duration-1000 ${loaded ? "opacity-100" : "opacity-0 translate-y-4"}`}
+          style={{ transitionDelay: "200ms" }}
         >
-          <div className="absolute inset-0 overflow-hidden opacity-30">
-            <div className="absolute inset-0 grid-bg-dense" />
-          </div>
-          <div className="absolute right-0 top-0 bottom-0 w-1 bg-gradient-to-b from-primary/0 via-primary/40 to-primary/0" />
-        </div>
-        <div
-          className="absolute right-0 top-0 h-full bg-background/95 border-l border-primary/20 z-30 transition-all duration-[2000ms] ease-[cubic-bezier(0.16,1,0.3,1)]"
-          style={{ width: gateOpen ? "0%" : "50%", boxShadow: gateOpen ? "none" : "-10px 0 60px hsl(185 80% 55% / 0.15)" }}
-        >
-          <div className="absolute inset-0 overflow-hidden opacity-30">
-            <div className="absolute inset-0 grid-bg-dense" />
-          </div>
-          <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-primary/0 via-primary/40 to-primary/0" />
-        </div>
-      </div>
-
-      {/* Main content */}
-      <div className={`relative z-20 text-center px-6 transition-all duration-1000 delay-500 ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}>
-        {/* Status badge */}
-        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border-glow bg-primary/5 mb-8 backdrop-blur-sm">
-          <span className="relative flex h-2.5 w-2.5">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-glow-online opacity-75" />
-            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-glow-online" />
+          <span className="relative flex h-2 w-2">
+            <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75 animate-ping" />
+            <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
           </span>
-          <span className="font-mono text-xs text-foreground/70">SWE @ BeOne Medicines · ML Systems</span>
-          <Briefcase className="w-3.5 h-3.5 text-primary/60" />
+          <span className="font-mono text-xs text-muted-foreground tracking-wide">
+            Software Developer @ BeOne Medicines
+          </span>
         </div>
 
-        {/* Name with parallax + hover + holographic shimmer */}
-        <div
-          ref={nameRef}
-          className="relative mb-2 cursor-default select-none"
-          onMouseEnter={() => setNameHovered(true)}
-          onMouseLeave={() => setNameHovered(false)}
-          style={{ transform: `translate(${mousePos.x * 8}px, ${mousePos.y * 5}px)`, transition: "transform 0.3s ease-out" }}
+        {/* Name */}
+        <h1
+          className={`font-display font-bold leading-[0.9] tracking-tight mb-6 ${loaded ? "anim-hero-name" : "opacity-0"}`}
+          style={{ animationDelay: "400ms" }}
         >
-          {/* Shimmer canvas */}
-          <canvas
-            ref={glyphRef}
-            className="absolute inset-0 w-full h-full pointer-events-none opacity-60"
-            style={{ mixBlendMode: "screen" }}
-          />
+          <span className="block text-6xl sm:text-8xl md:text-[7.5rem] text-foreground">
+            Shiva Reddy
+          </span>
+          <span className="block text-5xl sm:text-7xl md:text-[6rem] text-primary mt-2">
+            Peddireddy
+          </span>
+        </h1>
 
-          <h1 className="text-7xl sm:text-8xl md:text-[10rem] font-black tracking-tighter leading-none relative select-none">
-            <span
-              className={`inline-block transition-all duration-700 gradient-name-shiva ${nameHovered ? "name-glow-intense" : "name-glow-subtle"}`}
-              style={{
-                letterSpacing: nameHovered ? "0.05em" : "-0.05em",
-              }}
-            >
-              SHIVA
-            </span>
-          </h1>
-
-          {/* Decorative underline glow */}
-          <div
-            className="mx-auto h-[2px] rounded-full transition-all duration-700"
-            style={{
-              width: nameHovered ? "80%" : "40%",
-              background: "linear-gradient(90deg, transparent, hsl(185 80% 55% / 0.6), hsl(260 70% 60% / 0.4), transparent)",
-              boxShadow: nameHovered ? "0 0 20px hsl(185 80% 55% / 0.4)" : "none",
-            }}
-          />
-
-          <h1 className="text-5xl sm:text-6xl md:text-8xl font-black tracking-tighter leading-none mt-3 select-none">
-            <span
-              className={`inline-block transition-all duration-500 gradient-name-last ${nameHovered ? "" : ""}`}
-              style={{
-                filter: nameHovered ? "drop-shadow(0 0 50px hsl(35 90% 55% / 0.5))" : "drop-shadow(0 0 30px hsl(35 90% 55% / 0.2))",
-              }}
-            >
-              PEDDIREDDY
-            </span>
-          </h1>
-        </div>
-
-        {/* Subtitle */}
-        <div className="flex items-center justify-center gap-4 my-6">
-          <div className="h-px w-16 bg-gradient-to-r from-transparent to-primary/40" />
-          <span className="font-mono text-xs text-primary/50 tracking-[0.5em] uppercase">AI · ML · Systems</span>
-          <div className="h-px w-16 bg-gradient-to-l from-transparent to-primary/40" />
-        </div>
+        {/* Accent line */}
+        <div
+          className={`h-px bg-primary mb-8 ${loaded ? "anim-hero-line" : "opacity-0"}`}
+          style={{ animationDelay: "800ms", maxWidth: "200px" }}
+        />
 
         {/* Role typewriter */}
-        <div className="h-12 flex items-center justify-center mb-6">
-          <Terminal className="w-4 h-4 text-primary/40 mr-2" />
-          <span className="font-mono text-lg sm:text-xl text-primary">{displayText}</span>
-          <span className="inline-block w-0.5 h-6 bg-primary ml-0.5 animate-pulse-glow" />
+        <div
+          className={`flex items-center gap-3 mb-8 transition-all duration-1000 ${loaded ? "opacity-100" : "opacity-0"}`}
+          style={{ transitionDelay: "1000ms" }}
+        >
+          <span className="font-mono text-sm sm:text-base text-muted-foreground">$</span>
+          <span className="font-mono text-sm sm:text-base text-foreground">{text}</span>
+          <span className="inline-block w-[2px] h-5 bg-primary animate-pulse" />
         </div>
 
-        <p className="max-w-2xl mx-auto text-muted-foreground text-base sm:text-lg leading-relaxed mb-8">
-          Full-time SWE building enterprise platforms at scale. I design ML pipelines,
-          optimize model inference, and architect distributed training systems.
-          MS CS @ UCF (4.0 GPA). I make machines think faster.
+        {/* Description */}
+        <p
+          className={`max-w-xl text-muted-foreground text-base sm:text-lg leading-relaxed mb-12 transition-all duration-1000 ${loaded ? "opacity-100" : "opacity-0 translate-y-4"}`}
+          style={{ transitionDelay: "1200ms" }}
+        >
+          Building enterprise platforms at scale. MS Computer Science @ UCF with a 4.0 GPA.
+          I design systems that bridge the gap between research and production.
         </p>
 
-        {/* GitHub CTA */}
-        <a
-          href="https://github.com/shivareddy42"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="group inline-flex items-center gap-3 px-6 py-3 rounded-xl border border-primary/30 bg-primary/5 hover:bg-primary/15 hover:border-primary/50 transition-all duration-500 backdrop-blur-sm hover:shadow-[0_0_40px_hsl(185,80%,55%,0.15)]"
+        {/* CTAs */}
+        <div
+          className={`flex flex-wrap items-center gap-4 transition-all duration-1000 ${loaded ? "opacity-100" : "opacity-0 translate-y-4"}`}
+          style={{ transitionDelay: "1400ms" }}
         >
-          <Github className="w-5 h-5 text-primary group-hover:rotate-[360deg] transition-transform duration-700" />
-          <span className="font-mono text-sm text-primary">github.com/shivareddy42</span>
-          <span className="text-xs text-primary/40 group-hover:text-primary/70 transition-colors">→</span>
-        </a>
+          <a
+            href="https://github.com/shivareddy42"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group font-mono text-sm px-6 py-3 bg-primary text-primary-foreground hover:bg-primary/90 transition-all duration-300 rounded-sm flex items-center gap-2"
+          >
+            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+            GitHub
+          </a>
+          <a
+            href="https://linkedin.com/in/shivareddy42"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-mono text-sm px-6 py-3 border border-border text-foreground hover:border-primary/50 hover:text-primary transition-all duration-300 rounded-sm"
+          >
+            LinkedIn
+          </a>
+          <a
+            href="mailto:shivareddy761005@gmail.com"
+            className="font-mono text-sm text-muted-foreground hover:text-primary transition-colors duration-300 link-underline"
+          >
+            shivareddy761005@gmail.com
+          </a>
+        </div>
       </div>
 
-      {/* Bottom fade */}
-      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent z-10" />
+      {/* Scroll indicator */}
+      <div
+        className={`absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 transition-all duration-1000 ${loaded ? "opacity-100" : "opacity-0"}`}
+        style={{ transitionDelay: "2000ms" }}
+      >
+        <span className="font-mono text-[10px] text-muted-foreground tracking-widest uppercase">Scroll</span>
+        <ArrowDown className="w-3.5 h-3.5 text-muted-foreground animate-bounce" />
+      </div>
     </section>
   );
 };

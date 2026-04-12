@@ -8,7 +8,9 @@ export default {
     container: {
       center: true,
       padding: "2rem",
-      screens: { "2xl": "1400px" },
+      screens: {
+        "2xl": "1400px",
+      },
     },
     extend: {
       colors: {
@@ -45,6 +47,12 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        glow: {
+          primary: "hsl(var(--glow-primary))",
+          accent: "hsl(var(--glow-accent))",
+          warm: "hsl(var(--glow-warm))",
+          online: "hsl(var(--online))",
+        },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",
@@ -62,8 +70,7 @@ export default {
         sm: "calc(var(--radius) - 4px)",
       },
       fontFamily: {
-        display: ["Playfair Display", "serif"],
-        sans: ["DM Sans", "sans-serif"],
+        sans: ["Inter", "sans-serif"],
         mono: ["JetBrains Mono", "monospace"],
       },
       keyframes: {

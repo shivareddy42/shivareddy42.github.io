@@ -1,42 +1,55 @@
 import Navbar from "@/components/Navbar";
+import CyberSkyCanvas from "@/components/CyberSkyCanvas";
+import ParticleCanvas from "@/components/ParticleCanvas";
+import CursorTrail from "@/components/CursorTrail";
 import HeroSection from "@/components/HeroSection";
+import HolographicSection from "@/components/HolographicSection";
+import StreetDivider from "@/components/StreetDivider";
 import AboutSection from "@/components/AboutSection";
 import ProjectsSection from "@/components/ProjectsSection";
 import ExperienceSection from "@/components/ExperienceSection";
 import SkillsSection from "@/components/SkillsSection";
 import ContactSection from "@/components/ContactSection";
 
-const SectionDivider = () => (
-  <div className="max-w-6xl mx-auto px-6">
-    <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent" />
-  </div>
-);
-
 const Index = () => {
   return (
-    <div className="min-h-screen bg-background text-foreground overflow-x-hidden relative grain-overlay">
+    <div className="min-h-screen bg-background text-foreground overflow-x-hidden relative">
+      <CyberSkyCanvas />
+      <ParticleCanvas />
+      <CursorTrail />
       <Navbar />
+      
       <HeroSection />
-      <SectionDivider />
-      <section id="about" className="py-24 sm:py-32 px-6">
+      
+      <StreetDivider variant="lamp" label="Entering the Grid" />
+
+      <HolographicSection id="about">
         <AboutSection />
-      </section>
-      <SectionDivider />
-      <section id="projects" className="py-24 sm:py-32 px-6">
+      </HolographicSection>
+
+      <StreetDivider variant="neon" label="District: Projects" />
+
+      <HolographicSection id="projects">
         <ProjectsSection />
-      </section>
-      <SectionDivider />
-      <section id="experience" className="py-24 sm:py-32 px-6">
+      </HolographicSection>
+
+      <StreetDivider variant="lamp" label="District: Experience" />
+
+      <HolographicSection id="experience">
         <ExperienceSection />
-      </section>
-      <SectionDivider />
-      <section id="skills" className="py-24 sm:py-32 px-6">
+      </HolographicSection>
+
+      <StreetDivider variant="neon" label="District: Arsenal" />
+
+      <HolographicSection id="skills">
         <SkillsSection />
-      </section>
-      <SectionDivider />
-      <section id="contact" className="py-24 sm:py-32 px-6">
+      </HolographicSection>
+
+      <StreetDivider variant="lamp" label="End of the Road" />
+
+      <HolographicSection id="contact">
         <ContactSection />
-      </section>
+      </HolographicSection>
     </div>
   );
 };

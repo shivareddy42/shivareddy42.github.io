@@ -27,11 +27,11 @@ const AboutSection = () => {
         </div>
 
         <p className="text-muted-foreground text-lg leading-relaxed max-w-3xl">
-          I design and ship end-to-end ML systems, from training pipelines and
-          model optimization to real-time inference at scale. By day I architect
+          I design and ship cross functional ML systems, from training pipelines and
+          model optimization to real time inference at scale. By day I architect
           enterprise platforms at BeOne Medicines serving 10,000+ employees.
           After hours I go deep on performance: custom kernels, distributed
-          training, LLM serving engines, and high-throughput data pipelines
+          training, LLM serving engines, and high throughput data pipelines
           that turn research into production.
         </p>
 
